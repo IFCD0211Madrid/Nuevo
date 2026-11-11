@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#e31837">
+    <title>Palíndromo — Dale la vuelta</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --red: #e31837;
+            --deep-red: #b40e29;
+            --cream: #fff8f1;
+            --ink: #35151b;
+            --muted: #876e70;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: "Trebuchet MS", Arial, sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .hero {
+            position: relative;
+            display: flex;
+            min-height: 660px;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 28px max(7vw, 24px) 90px;
+            background:
+                radial-gradient(ellipse at 86% 30%, rgb(255 255 255 / 13%) 0 12%, transparent 12.2%),
+                linear-gradient(135deg, #f22643 0%, var(--red) 48%, #c8102e 100%);
+            color: #fff;
+        }
+
+        .hero::before,
+        .hero::after {
+            position: absolute;
+            z-index: 0;
+            border: 1px solid rgb(255 255 255 / 16%);
+            border-radius: 50%;
+            content: "";
+            pointer-events: none;
+        }
+
+        .hero::before {
+            top: 105px;
+            right: -190px;
+            width: 590px;
+            height: 590px;
+        }
+
+        .hero::after {
+            top: 165px;
+            right: -130px;
+            width: 470px;
+            height: 470px;
+        }
+
+        .topbar,
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: .13em;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            font-family: Georgia, serif;
+            font-size: 20px;
+            font-style: italic;
+            letter-spacing: 0;
+        }
+
+        .top-note {
+            border: 1px solid rgb(255 255 255 / 55%);
+            border-radius: 999px;
+            padding: 9px 15px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+            padding: 75px 0 25px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin: 0 0 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 760px;
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(52px, 8vw, 104px);
+            font-weight: 400;
+            letter-spacing: -.065em;
+            line-height: .96;
+        }
+
+        h1 em {
+            font-weight: 400;
+        }
+
+        .intro {
+            max-width: 470px;
+            margin: 25px 0 0;
+            color: rgb(255 255 255 / 88%);
+            font-size: 17px;
+            line-height: 1.65;
+        }
+
+        .workbench {
+            position: relative;
+            z-index: 2;
+            width: min(890px, calc(100% - 40px));
+            margin: -65px auto 0;
+            border: 1px solid rgb(53 21 27 / 6%);
+            border-radius: 22px;
+            padding: clamp(25px, 5vw, 50px);
+            background: #fff;
+            box-shadow: 0 24px 70px rgb(102 22 37 / 13%);
+        }
+
+        .form-heading {
+            margin: 0 0 9px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 400;
+            letter-spacing: -.03em;
+        }
+
+        .form-hint {
+            margin: 0 0 24px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        #phrase {
+            min-width: 0;
+            flex: 1;
+            border: 1px solid #eadcda;
+            border-radius: 10px;
+            padding: 16px 18px;
+            background: #fffdfb;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        #phrase::placeholder {
+            color: #aa9896;
+        }
+
+        #phrase:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 4px rgb(227 24 55 / 12%);
+        }
+
+        .check-button {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 0;
+            border-radius: 10px;
+            padding: 0 23px;
+            background: var(--red);
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            transition: background .2s, transform .2s;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+            background: var(--deep-red);
+        }
+
+        .check-button:focus-visible,
+        .example:focus-visible {
+            outline: 3px solid #ff9aab;
+            outline-offset: 3px;
+        }
+
+        .arrow {
+            font-size: 18px;
+        }
+
+        .examples {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 9px;
+            margin-top: 21px;
+        }
+
+        .examples-label {
+            margin-right: 3px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .example {
+            border: 1px solid #f0dfdd;
+            border-radius: 999px;
+            padding: 7px 11px;
+            background: #fff;
+            color: #68484b;
+            cursor: pointer;
+            font-size: 12px;
+            transition: border-color .2s, color .2s;
+        }
+
+        .example:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .result {
+            display: none;
+            align-items: flex-start;
+            gap: 14px;
+            margin-top: 25px;
+            border-radius: 12px;
+            padding: 17px 19px;
+            background: #fff4f3;
+            animation: arrive .35s ease-out;
+        }
+
+        .result.visible {
+            display: flex;
+        }
+
+        .result-icon {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            font-weight: 900;
+        }
+
+        .result h3 {
+            margin: 1px 0 5px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 20px;
+            font-weight: 400;
+        }
+
+        .result p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .result.not-palindrome .result-icon {
+            background: #77565a;
+        }
+
+        .result.error .result-icon {
+            background: #77565a;
+        }
+
+        .footer {
+            padding: 46px 20px 34px;
+            color: #9a8182;
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        @keyframes arrive {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                min-height: 590px;
+                padding: 22px 22px 85px;
+            }
+
+            .top-note {
+                padding: 8px 10px;
+                font-size: 9px;
+            }
+
+            .hero-content {
+                padding: 66px 0 40px;
+            }
+
+            .intro {
+                max-width: 350px;
+                font-size: 15px;
+            }
+
+            .workbench {
+                width: calc(100% - 28px);
+                margin-top: -60px;
+                padding: 25px 21px;
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+
+            .check-button {
+                min-height: 52px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <nav class="topbar" aria-label="Principal">
+            <a class="brand" href="#" aria-label="Dale la vuelta, inicio">
+                <span class="brand-mark" aria-hidden="true">v</span>
+                <span>Dale la vuelta</span>
+            </a>
+            <span class="top-note">Un juego de palabras</span>
+        </nav>
+
+        <div class="hero-content">
+            <p class="eyebrow">Palabras con efecto espejo</p>
+            <h1>¿Se lee igual<br><em>al revés?</em></h1>
+            <p class="intro">Hay frases que esconden una sorpresa. Escribe la tuya y descubre si vuelve a ser la misma cuando le das la vuelta.</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="workbench" aria-labelledby="form-heading">
+            <h2 class="form-heading" id="form-heading">Ponla a prueba</h2>
+            <p class="form-hint">No importan los espacios, las tildes ni la puntuación. Solo cuentan las letras y los números.</p>
+            <form id="palindrome-form">
+                <div class="input-row">
+                    <input id="phrase" name="phrase" type="text" placeholder="Escribe una palabra o frase..." autocomplete="off" aria-label="Frase para comprobar" required>
+                    <button class="check-button" type="submit">Comprobar <span class="arrow" aria-hidden="true">↗</span></button>
+                </div>
+            </form>
+
+            <div class="examples" aria-label="Ejemplos">
+                <span class="examples-label">Prueba con:</span>
+                <button class="example" type="button" data-phrase="Anita lava la tina">Anita lava la tina</button>
+                <button class="example" type="button" data-phrase="Dábale arroz a la zorra el abad">Dábale arroz a la zorra</button>
+            </div>
+
+            <section class="result" id="result" role="status" aria-live="polite" aria-atomic="true">
+                <span class="result-icon" id="result-icon" aria-hidden="true">✓</span>
+                <div>
+                    <h3 id="result-title"></h3>
+                    <p id="result-detail"></p>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer class="footer">Dale la vuelta · Juega con las palabras</footer>
+
+    <script>
+        const form = document.getElementById("palindrome-form");
+        const phraseInput = document.getElementById("phrase");
+        const result = document.getElementById("result");
+        const resultIcon = document.getElementById("result-icon");
+        const resultTitle = document.getElementById("result-title");
+        const resultDetail = document.getElementById("result-detail");
+
+        function normalizePhrase(phrase) {
+            return phrase
+                .toLocaleLowerCase("es")
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .replace(/[^\p{L}\p{N}]/gu, "");
+        }
+
+        function checkPhrase(phrase) {
+            const normalized = normalizePhrase(phrase);
+
+            if (!normalized) {
+                result.className = "result visible error";
+                resultIcon.textContent = "!";
+                resultTitle.textContent = "Escribe alguna letra o número";
+                resultDetail.textContent = "La puntuación y los espacios no se pueden comprobar por sí solos.";
+                return;
+            }
+
+            const isPalindrome = normalized === [...normalized].reverse().join("");
+            result.className = `result visible${isPalindrome ? "" : " not-palindrome"}`;
+            resultIcon.textContent = isPalindrome ? "✓" : "↔";
+            resultTitle.textContent = isPalindrome ? "¡Es un palíndromo!" : "Esta vez no se lee igual";
+            resultDetail.textContent = `«${phrase.trim()}» ${isPalindrome ? "se lee igual en ambos sentidos." : "cambia al leerla del final al principio."}`;
+        }
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            checkPhrase(phraseInput.value);
+        });
+
+        document.querySelectorAll(".example").forEach((button) => {
+            button.addEventListener("click", () => {
+                phraseInput.value = button.dataset.phrase;
+                checkPhrase(phraseInput.value);
+                phraseInput.focus();
+            });
+        });
+    </script>
+</body>
+</html>
